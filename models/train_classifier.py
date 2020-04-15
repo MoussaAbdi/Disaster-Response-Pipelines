@@ -40,6 +40,8 @@ def load_data(database_filepath):
 	Y = df.drop(['id', 'message', 'original', 'genre'], axis=1).values
 	category_names = df.columns[3:]
 	
+	print('Loaded {} samples'.format(len(df)))
+	
 	return X, Y, category_names
 
 def tokenize(text):
