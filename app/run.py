@@ -26,6 +26,8 @@ def tokenize(text):
     return clean_tokens
 
 # load data
+# engine = create_engine('sqlite:///../data/InsertDatabaseName.db')
+# df = pd.read_sql_table('InsertTableName', engine)
 engine = create_engine('sqlite:///../data/DisasterResponse.db')
 df = pd.read_sql_table('MessagesTable', engine)
 
@@ -42,6 +44,15 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+    
+        
+     # Top categories
+    remove_col = ['id', 'message', 'original', 'genre']
+    y = df.loc[:, ~df.columns.isin(remove_col)]
+    category_counts_top5 = y.sum().sort_values().tail()
+    category_names_top5 = list(category_counts_top5.index)
+    category_counts_bottom5 = y.sum().sort_values().head()
+    category_names_bottom5 = list(category_counts_bottom5.index)
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
@@ -61,6 +72,38 @@ def index():
                 },
                 'xaxis': {
                     'title': "Genre"
+                }
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    y=category_names_top5,
+                    x=category_counts_top5,
+                    orientation = 'h'
+                )
+            ],
+
+            'layout': {
+                'title': 'Top 5 Categories',
+                'xaxis': {
+                    'title': "Count"
+                }
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    y=category_names_bottom5,
+                    x=category_counts_bottom5,
+                    orientation = 'h'
+                )
+            ],
+
+            'layout': {
+                'title': 'Least represented 5 Categories',
+                'xaxis': {
+                    'title': "Count"
                 }
             }
         }
